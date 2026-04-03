@@ -32,7 +32,7 @@ To overcome these challenges, PAN-USOM-API2EDL needs to be used as a middleware.
 
 Pre-compiled binaries can be downloaded directly from the latest release (Link here: [Latest Release](https://github.com/enginy88/PAN-USOM-API2EDL/releases/latest)). These binaries can readily be used on the systems for which they were compiled. Neither re-compiling any source code nor installing Go is needed. In case there is no pre-compiled binary presented for your system, you can refer to the [Compilation](#compilation) section.
 
-This program only requires the `PAN-USOM-API2EDL.env` file to determine which settings it will run with. The supplied `appsett.env` is a sample/template — rename or copy it to `PAN-USOM-API2EDL.env` to use it. Even if the program can run with its default settings without any options set in the env file, the env file must be present and accessible.
+This program only requires the `PAN-USOM-API2EDL.env` file to determine which settings it will run with. The supplied `PAN-USOM-API2EDL.env` is a sample/template — rename or copy it to `PAN-USOM-API2EDL.env` to use it. Even if the program can run with its default settings without any options set in the env file, the env file must be present and accessible.
 
 By default, the program searches for the `PAN-USOM-API2EDL.env` file in the working directory. The working directory can be changed by passing the `-dir [PATH]` argument. (`PATH` value for `-dir` can be absolute or relative.) The working directory also determines where the generated EDL files will be placed. If you need to change the output directory without changing the working directory, you can use the `-out [PATH]` argument for that purpose. (`PATH` value for `-out` can be absolute or relative. If a relative `PATH` value for `-out` is used together with the `-dir` option, it is based on the former working directory.) These options can be explored by passing the `-usage` argument to the program.
 
@@ -68,40 +68,40 @@ Each generated file includes a header with the last update timestamp and the rec
 
 ## Settings:
 
-All setting options are provided with the sample `appsett.env` file, along with short descriptions and default values for each. Note that all lines are commented-out in the sample. To use any option, simply remove the comment token (`#`) and set the preferred value. When ready, rename or copy the file to `PAN-USOM-API2EDL.env`.
+All setting options are provided with the sample `PAN-USOM-API2EDL.env` file, along with short descriptions and default values for each. Note that all lines are commented-out in the sample. To use any option, simply remove the comment token (`#`) and set the preferred value. When ready, rename or copy the file to `PAN-USOM-API2EDL.env`.
 
 Settings can also be provided as actual environment variables, which take precedence over the env file.
 
 ```shell
 # Global Settings:
-API2XML_GLOBAL__API_PATH={Enter URL of USOM API endpoint, Default: https://www.usom.gov.tr/api/address/index}
-API2XML_GLOBAL__DB_PATH={Enter path to SQLite database file, Default: usom.db}
-API2XML_GLOBAL__READ_FROM_FILE={Enter either TRUE or FALSE to read from file instead of API, Default: FALSE}
-API2XML_GLOBAL__ENABLE_CONCURRENCY={Enter either TRUE or FALSE to enable concurrent list generation, Default: FALSE}
-API2XML_GLOBAL__NUM_OF_WORKER={Enter number of concurrent workers, Default: 4}
+API2EDL_GLOBAL__API_PATH={Enter URL of USOM API endpoint, Default: https://www.usom.gov.tr/api/address/index}
+API2EDL_GLOBAL__DB_PATH={Enter path to SQLite database file, Default: usom.db}
+API2EDL_GLOBAL__READ_FROM_FILE={Enter either TRUE or FALSE to read from file instead of API, Default: FALSE}
+API2EDL_GLOBAL__ENABLE_CONCURRENCY={Enter either TRUE or FALSE to enable concurrent list generation, Default: FALSE}
+API2EDL_GLOBAL__NUM_OF_WORKER={Enter number of concurrent workers, Default: 4}
 
 # Log Settings:
-API2XML_LOG__VERBOSE={Enter either TRUE or FALSE to enable verbose logging, Default: FALSE}
-API2XML_LOG__WRITE_TO_DIR={Enter directory path to write log files, Default: (empty, logs to stdout)}
-API2XML_LOG__FILENAME_SUFFIX={Enter suffix string to append to log filenames, Default: (empty)}
+API2EDL_LOG__VERBOSE={Enter either TRUE or FALSE to enable verbose logging, Default: FALSE}
+API2EDL_LOG__WRITE_TO_DIR={Enter directory path to write log files, Default: (empty, logs to stdout)}
+API2EDL_LOG__FILENAME_SUFFIX={Enter suffix string to append to log filenames, Default: (empty)}
 
 # Request Settings:
-API2XML_REQUEST__TOTAL_TIMEOUT={Enter total operation timeout in seconds, Default: 180}
-API2XML_REQUEST__REQUEST_TIMEOUT={Enter per-request timeout in seconds, Default: 30}
-API2XML_REQUEST__ADD_RETRY_COUNT={Enter number of additional retry attempts after first request, Default: 2}
-API2XML_REQUEST__RETRY_WAIT_TIME={Enter wait time between retries in milliseconds, Default: 1000}
-API2XML_REQUEST__RETRY_MAX_WAIT_TIME={Enter maximum wait time between retries in milliseconds, Default: 5000}
-API2XML_REQUEST__ALLOW_REDIRECT={Enter either TRUE or FALSE to allow HTTP redirects, Default: FALSE}
-API2XML_REQUEST__MAX_REDIRECT={Enter maximum number of redirects to follow, Default: 2}
-API2XML_REQUEST__RESPONSE_BODY_LIMIT={Enter maximum response body size in bytes, Default: 30000000}
-API2XML_REQUEST__USER_AGENT={Enter custom User-Agent header string, Default: Mozilla/5.0 (compatible; Linux x86_64; IDEUS/1.0)}
+API2EDL_REQUEST__TOTAL_TIMEOUT={Enter total operation timeout in seconds, Default: 180}
+API2EDL_REQUEST__REQUEST_TIMEOUT={Enter per-request timeout in seconds, Default: 30}
+API2EDL_REQUEST__ADD_RETRY_COUNT={Enter number of additional retry attempts after first request, Default: 2}
+API2EDL_REQUEST__RETRY_WAIT_TIME={Enter wait time between retries in milliseconds, Default: 1000}
+API2EDL_REQUEST__RETRY_MAX_WAIT_TIME={Enter maximum wait time between retries in milliseconds, Default: 5000}
+API2EDL_REQUEST__ALLOW_REDIRECT={Enter either TRUE or FALSE to allow HTTP redirects, Default: FALSE}
+API2EDL_REQUEST__MAX_REDIRECT={Enter maximum number of redirects to follow, Default: 2}
+API2EDL_REQUEST__RESPONSE_BODY_LIMIT={Enter maximum response body size in bytes, Default: 30000000}
+API2EDL_REQUEST__USER_AGENT={Enter custom User-Agent header string, Default: Mozilla/5.0 (compatible; Linux x86_64; IDEUS/1.0)}
 
 # List Settings:
-API2XML_LIST__MIN_CRITICALITY={Enter minimum criticality level to include entries (1-5), Default: 5}
-API2XML_LIST__CREATE_STANDALONE_LISTS={Enter either TRUE or FALSE to create standalone EDL lists, Default: TRUE}
-API2XML_LIST__CREATE_AGGREGATED_LISTS={Enter either TRUE or FALSE to create aggregated EDL lists, Default: TRUE}
-API2XML_LIST__CREATE_MIX_LISTS={Enter either TRUE or FALSE to create mixed EDL lists, Default: FALSE}
-API2XML_LIST__SKIP_IF_DB_IDENTICAL={Enter either TRUE or FALSE to skip output if DB is unchanged, Default: FALSE}
+API2EDL_LIST__MIN_CRITICALITY={Enter minimum criticality level to include entries (1-5), Default: 5}
+API2EDL_LIST__CREATE_STANDALONE_LISTS={Enter either TRUE or FALSE to create standalone EDL lists, Default: TRUE}
+API2EDL_LIST__CREATE_AGGREGATED_LISTS={Enter either TRUE or FALSE to create aggregated EDL lists, Default: TRUE}
+API2EDL_LIST__CREATE_MIX_LISTS={Enter either TRUE or FALSE to create mixed EDL lists, Default: FALSE}
+API2EDL_LIST__SKIP_IF_DB_IDENTICAL={Enter either TRUE or FALSE to skip output if DB is unchanged, Default: FALSE}
 ```
 
 <details>
@@ -110,121 +110,121 @@ API2XML_LIST__SKIP_IF_DB_IDENTICAL={Enter either TRUE or FALSE to skip output if
 
 ### Explanation of Settings:
 
-**API2XML_GLOBAL__API_PATH**
+**API2EDL_GLOBAL__API_PATH**
 
 TYPE: `String` DEFAULT VALUE: `https://www.usom.gov.tr/api/address/index`
 
 The URL of the USOM JSON API endpoint. The program fetches all paginated pages from this URL. Normally, there is no need to change this from the default value. However, it is implemented for a possible future scenario where USOM changes the URL and a quick reconfiguration is needed without recompiling the source code.
 
-**API2XML_GLOBAL__DB_PATH**
+**API2EDL_GLOBAL__DB_PATH**
 
 TYPE: `String` DEFAULT VALUE: `usom.db`
 
 Path to the on-disk SQLite database file. After each successful fetch, the in-memory database is compared with this file. If differences are detected, the old file is renamed to `usom.db_old` as a rotating backup and a new snapshot is written. On the next run the freshest snapshot can be used directly via `READ_FROM_FILE`.
 
-**API2XML_GLOBAL__READ_FROM_FILE**
+**API2EDL_GLOBAL__READ_FROM_FILE**
 
 TYPE: `Boolean` DEFAULT VALUE: `FALSE`
 
 When set to `TRUE`, the program skips the live API fetch and loads records directly from the on-disk SQLite database at `DB_PATH`. Useful for regenerating EDL files from an existing snapshot without making any network requests (e.g. for testing or re-generating lists after changing filter settings).
 
-**API2XML_GLOBAL__ENABLE_CONCURRENCY**
+**API2EDL_GLOBAL__ENABLE_CONCURRENCY**
 
 TYPE: `Boolean` DEFAULT VALUE: `FALSE`
 
 When set to `TRUE`, EDL list generation tasks are dispatched to a worker pool instead of being processed one by one. For large numbers of output files this can significantly reduce total run time. The number of parallel workers is controlled by `NUM_OF_WORKER`.
 
-**API2XML_GLOBAL__NUM_OF_WORKER**
+**API2EDL_GLOBAL__NUM_OF_WORKER**
 
 TYPE: `Integer` DEFAULT VALUE: `4`
 
 The number of goroutine workers in the pool when `ENABLE_CONCURRENCY` is `TRUE`. Has no effect when concurrency is disabled.
 
-**API2XML_LOG__VERBOSE**
+**API2EDL_LOG__VERBOSE**
 
 TYPE: `Boolean` DEFAULT VALUE: `FALSE`
 
 This program has 4 levels of log output: always, error, warning, and info. When set to `FALSE`, info-level logs are suppressed. Always-level and error-level logs are never suppressed. Error-level logs indicate an unrecoverable failure that causes the program to stop.
 
-**API2XML_LOG__WRITE_TO_DIR**
+**API2EDL_LOG__WRITE_TO_DIR**
 
 TYPE: `String` DEFAULT VALUE: `(empty)`
 
 Directory path where log files should be written. When empty, all output goes to stdout.
 
-**API2XML_LOG__FILENAME_SUFFIX**
+**API2EDL_LOG__FILENAME_SUFFIX**
 
 TYPE: `String` DEFAULT VALUE: `(empty)`
 
 Optional suffix appended to log filenames when `WRITE_TO_DIR` is set.
 
-**API2XML_REQUEST__TOTAL_TIMEOUT**
+**API2EDL_REQUEST__TOTAL_TIMEOUT**
 
 TYPE: `Integer` DEFAULT VALUE: `180`
 
 Total operation timeout for the entire paginated fetch session, in seconds.
 
-**API2XML_REQUEST__REQUEST_TIMEOUT**
+**API2EDL_REQUEST__REQUEST_TIMEOUT**
 
 TYPE: `Integer` DEFAULT VALUE: `30`
 
 Per-request timeout for each individual API call, in seconds.
 
-**API2XML_REQUEST__ADD_RETRY_COUNT**
+**API2EDL_REQUEST__ADD_RETRY_COUNT**
 
 TYPE: `Integer` DEFAULT VALUE: `2`
 
 Number of additional retry attempts after the first failed request. A value of `2` means up to 3 total attempts per page.
 
-**API2XML_REQUEST__RETRY_WAIT_TIME**
+**API2EDL_REQUEST__RETRY_WAIT_TIME**
 
 TYPE: `Integer` DEFAULT VALUE: `1000`
 
 Wait time between retry attempts, in milliseconds.
 
-**API2XML_REQUEST__RETRY_MAX_WAIT_TIME**
+**API2EDL_REQUEST__RETRY_MAX_WAIT_TIME**
 
 TYPE: `Integer` DEFAULT VALUE: `5000`
 
 Maximum wait time between retries (used for exponential backoff), in milliseconds.
 
-**API2XML_REQUEST__ALLOW_REDIRECT**
+**API2EDL_REQUEST__ALLOW_REDIRECT**
 
 TYPE: `Boolean` DEFAULT VALUE: `FALSE`
 
 Whether to follow HTTP redirects. Disabled by default as a security measure; an unexpected redirect could indicate a MITM attempt against your threat feed.
 
-**API2XML_REQUEST__MAX_REDIRECT**
+**API2EDL_REQUEST__MAX_REDIRECT**
 
 TYPE: `Integer` DEFAULT VALUE: `2`
 
 Maximum number of redirects to follow when `ALLOW_REDIRECT` is `TRUE`.
 
-**API2XML_REQUEST__RESPONSE_BODY_LIMIT**
+**API2EDL_REQUEST__RESPONSE_BODY_LIMIT**
 
 TYPE: `Integer` DEFAULT VALUE: `30000000`
 
 Maximum response body size in bytes (default ~30 MB). Requests exceeding this limit will be rejected. Adjust if the USOM API response ever grows beyond this size.
 
-**API2XML_REQUEST__USER_AGENT**
+**API2EDL_REQUEST__USER_AGENT**
 
 TYPE: `String` DEFAULT VALUE: `Mozilla/5.0 (compatible; Linux x86_64; IDEUS/1.0)`
 
 The User-Agent header sent with each API request.
 
-**API2XML_LIST__MIN_CRITICALITY**
+**API2EDL_LIST__MIN_CRITICALITY**
 
 TYPE: `Integer` DEFAULT VALUE: `5`
 
 The minimum criticality level threshold for `high` severity lists (1 = lowest, 5 = highest). Only records with a criticality level equal to or greater than this value are included in lists with `high` severity. Records in `any` severity lists are never filtered by criticality. USOM assigns criticality from 1 to 5.
 
-**API2XML_LIST__CREATE_STANDALONE_LISTS**
+**API2EDL_LIST__CREATE_STANDALONE_LISTS**
 
 TYPE: `Boolean` DEFAULT VALUE: `TRUE`
 
 When `TRUE`, generates separate EDL files for each IOC type (`ip`, `url`, `domain`) across all time windows and severity levels. For the `domain` type, count-capped variants (50k to 1m) are also generated.
 
-**API2XML_LIST__CREATE_AGGREGATED_LISTS**
+**API2EDL_LIST__CREATE_AGGREGATED_LISTS**
 
 TYPE: `Boolean` DEFAULT VALUE: `TRUE`
 
@@ -235,13 +235,13 @@ When `TRUE`, generates aggregated EDL files that cross USOM-assigned type bounda
 
 Time-window and count-capped variants are generated for all aggregated types.
 
-**API2XML_LIST__CREATE_MIX_LISTS**
+**API2EDL_LIST__CREATE_MIX_LISTS**
 
 TYPE: `Boolean` DEFAULT VALUE: `FALSE`
 
 When `TRUE`, generates mixed EDL files containing all IOC types (`ip`, `url`, `domain`) combined into a single list. Time-window and count-capped variants are generated.
 
-**API2XML_LIST__SKIP_IF_DB_IDENTICAL**
+**API2EDL_LIST__SKIP_IF_DB_IDENTICAL**
 
 TYPE: `Boolean` DEFAULT VALUE: `FALSE`
 
