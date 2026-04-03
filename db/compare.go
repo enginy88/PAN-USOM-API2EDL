@@ -15,7 +15,6 @@ import (
 
 var ErrTypeAssert = errors.New("type assertion failure")
 
-
 // CompareWithFile compares the in-memory database with a file-based database
 func CompareWithFile(dbPath string) (bool, error) {
 	// Check if file exists
