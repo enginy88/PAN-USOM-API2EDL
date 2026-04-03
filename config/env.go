@@ -71,10 +71,10 @@ type ListSubEnvStruct struct {
 }
 
 type AppEnvStruct struct {
-	Global  GlobalSubEnvStruct  `config:"API2XML_GLOBAL"`
-	Log     LogSubEnvStruct     `config:"API2XML_LOG"`
-	Request RequestSubEnvStruct `config:"API2XML_REQUEST"`
-	List    ListSubEnvStruct    `config:"API2XML_LIST"`
+	Global  GlobalSubEnvStruct  `config:"API2EDL_GLOBAL"`
+	Log     LogSubEnvStruct     `config:"API2EDL_LOG"`
+	Request RequestSubEnvStruct `config:"API2EDL_REQUEST"`
+	List    ListSubEnvStruct    `config:"API2EDL_LIST"`
 }
 
 var AppEnv *AppEnvStruct
@@ -150,7 +150,7 @@ func checkAppEnv() {
 	AppEnv.Global.APIPath = toLowerCase(AppEnv.Global.APIPath)
 
 	if containsSpace(AppEnv.Global.APIPath) {
-		logger.LogWarn.Println("ENV: 'API2XML_GLOBAL__API_PATH' value contains whitespace, this will cause a failure!")
+		logger.LogWarn.Println("ENV: 'API2EDL_GLOBAL__API_PATH' value contains whitespace, this will cause a failure!")
 	}
 
 }
