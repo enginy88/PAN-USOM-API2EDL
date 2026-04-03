@@ -199,11 +199,16 @@ func GenerateList(ctx context.Context, listConfig ListConfig) error {
 	}
 
 	filename := "edl-" + string(listConfig.Type) + "-" + string(listConfig.Severity) + "-" + string(listConfig.TimeLimit) + string(listConfig.CountLimit) + unlimitedStr + ".txt"
-	filename = filepath.Base(filepath.Clean(filename))
-
 	fullPath := filepath.Join(config.AppFlag.OutputDir, filename)
 
-	f, err := os.Create(fullPath)
+	root, err := os.OpenRoot(config.AppFlag.OutputDir)
+	if err != nil {
+		logger.LogErr.Println("ERROR: Cannot open output directory: '" + config.AppFlag.OutputDir + "'! (" + err.Error() + ")")
+		return err
+	}
+	defer root.Close()
+
+	f, err := root.Create(filename)
 	if err != nil {
 		logger.LogErr.Println("ERROR: Cannot create file: '" + fullPath + "'! (" + err.Error() + ")")
 		return err
