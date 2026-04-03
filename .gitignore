@@ -1,0 +1,11 @@
+.DS_Store
+.cursor/
+bin/
+openapi.yaml
+url-list.xml
+url-list.txt
+PAN-USOM-API2EDL.env
+PAN-USOM-API2EDL
+usom.db
+usom.db_old
+*.txt
