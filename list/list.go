@@ -201,9 +201,11 @@ func GenerateList(ctx context.Context, listConfig ListConfig) error {
 	filename := "edl-" + string(listConfig.Type) + "-" + string(listConfig.Severity) + "-" + string(listConfig.TimeLimit) + string(listConfig.CountLimit) + unlimitedStr + ".txt"
 	filename = filepath.Base(filepath.Clean(filename))
 
-	f, err := os.Create(filename) // #nosec G304 -- filename sanitized via filepath.Base/Clean; components are typed constants
+	fullPath := filepath.Join(config.AppFlag.OutputDir, filename)
+
+	f, err := os.Create(fullPath)
 	if err != nil {
-		logger.LogErr.Println("ERROR: Cannot create file: '" + filename + "'! (" + err.Error() + ")")
+		logger.LogErr.Println("ERROR: Cannot create file: '" + fullPath + "'! (" + err.Error() + ")")
 		return err
 	}
 	defer f.Close()
@@ -211,7 +213,7 @@ func GenerateList(ctx context.Context, listConfig ListConfig) error {
 	writer := bufio.NewWriter(f)
 
 	if _, err := fmt.Fprintln(writer, generateListHeader(len(validRecords))); err != nil {
-		logger.LogErr.Println("ERROR: Cannot write list header to file: '" + filename + "'! (" + err.Error() + ")")
+		logger.LogErr.Println("ERROR: Cannot write list header to file: '" + fullPath + "'! (" + err.Error() + ")")
 		return err
 	}
 
@@ -220,12 +222,12 @@ func GenerateList(ctx context.Context, listConfig ListConfig) error {
 			break
 		}
 		if _, err := fmt.Fprintln(writer, record); err != nil {
-			logger.LogErr.Println("ERROR: Cannot write record to file: '" + filename + "'! (" + err.Error() + ")")
+			logger.LogErr.Println("ERROR: Cannot write record to file: '" + fullPath + "'! (" + err.Error() + ")")
 			return err
 		}
 	}
 
-	logger.LogInfo.Println("LIST: The list is created with filename: '" + filename + "'.")
+	logger.LogInfo.Println("LIST: The list is created with filename: '" + fullPath + "'.")
 
 	return writer.Flush()
 }
