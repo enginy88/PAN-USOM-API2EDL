@@ -1,4 +1,4 @@
-package usom
+package sgb
 
 type Response struct {
 	TotalCount int     `json:"totalCount"`

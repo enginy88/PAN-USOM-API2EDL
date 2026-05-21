@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/enginy88/PAN-USOM-API2EDL/logger"
+	"github.com/enginy88/PAN-SGB-API2EDL/logger"
 
 	_ "modernc.org/sqlite"
 )

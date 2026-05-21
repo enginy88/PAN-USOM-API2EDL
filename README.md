@@ -1,6 +1,6 @@
-# PAN-USOM-API2EDL
+# PAN-SGB-API2EDL
 
-A Go program to fetch the USOM (TR-CERT) OSINT Feed via JSON API, persist it to a SQLite database, and convert it to multiple PAN-OS EDL-compatible plain-text files — categorized by IOC type, severity, time window, and count cap.
+A Go program to fetch the SGB (Formerly known as USOM) (TR-CERT) OSINT Feed via JSON API, persist it to a SQLite database, and convert it to multiple PAN-OS EDL-compatible plain-text files — categorized by IOC type, severity, time window, and count cap.
 
 ## Brief:
 
@@ -9,14 +9,14 @@ This program's existence is due to the following reasons:
 * PAN-OS can only read EDLs from plain TXT files. It does not support other formats like JSON, XML, RSS, STIX, or TAXII. It is sensitive to data format and only accepts one value per line.
 * PAN-OS has no regex capability for EDLs to parse different types. It cannot segregate different types like IP, domain, and URL from a single EDL source. Each type needs to be defined separately.
 * PAN-OS has capacity limits for EDLs. Higher end platforms have a 250k URL limit, and lower end platforms have a 100k URL limit. Other limits exist for IPs and domains depending on the platform.
-* USOM does not provide separate feeds for IP, domain, and URL IOC types, unlike other CERTs. They only provide a single source with a mixture of each IOC type.
-* USOM feed contains IOCs with multiple and inconsistent syntaxes for each type. Some sort of normalization is needed before use.
-* USOM feed contains a huge number of IOCs. The total count exceeds PAN-OS capacity limits even for the highest platforms. As old records are never removed, the feed contains ancient and questionable entries.
+* SGB (Formerly known as USOM) does not provide separate feeds for IP, domain, and URL IOC types, unlike other CERTs. They only provide a single source with a mixture of each IOC type.
+* SGB (Formerly known as USOM) feed contains IOCs with multiple and inconsistent syntaxes for each type. Some sort of normalization is needed before use.
+* SGB (Formerly known as USOM) feed contains a huge number of IOCs. The total count exceeds PAN-OS capacity limits even for the highest platforms. As old records are never removed, the feed contains ancient and questionable entries.
 * Minemald could be used to address some of these downsides formerly, but it is archived and no longer developed by PAN. Also, it produces another link in the security toolchain, which needs to be learned and maintained.
 
-To overcome these challenges, PAN-USOM-API2EDL needs to be used as a middleware. This program:
+To overcome these challenges, PAN-SGB-API2EDL needs to be used as a middleware. This program:
 
-* Fetches the full USOM IOC Feed via the paginated JSON API.
+* Fetches the full SGB (Formerly known as USOM) IOC Feed via the paginated JSON API.
 * Persists all fetched records into an in-memory SQLite database.
 * Detects changes by comparing the in-memory database against the previously saved on-disk snapshot.
 * Creates a rotating backup of the on-disk database when changes are detected.
@@ -25,18 +25,18 @@ To overcome these challenges, PAN-USOM-API2EDL needs to be used as a middleware.
 * Supports time-window filtering (e.g. last 30 days, 1 year) and count-capping (e.g. top 100k most recent entries).
 * Deduplicates IOCs after normalization.
 * Generates many categorized EDL files in plain-text format ready for direct consumption by PAN-OS.
-* Supports optional aggregated EDL modes where IOC extraction crosses USOM-assigned type boundaries.
+* Supports optional aggregated EDL modes where IOC extraction crosses SGB (Formerly known as USOM) assigned type boundaries.
 * Generates lists sequentially or concurrently using a configurable worker pool.
 
 ## Usage:
 
-Pre-compiled binaries can be downloaded directly from the latest release (Link here: [Latest Release](https://github.com/enginy88/PAN-USOM-API2EDL/releases/latest)). These binaries can readily be used on the systems for which they were compiled. Neither re-compiling any source code nor installing Go is needed. In case there is no pre-compiled binary presented for your system, you can refer to the [Compilation](#compilation) section.
+Pre-compiled binaries can be downloaded directly from the latest release (Link here: [Latest Release](https://github.com/enginy88/PAN-SGB-API2EDL/releases/latest)). These binaries can readily be used on the systems for which they were compiled. Neither re-compiling any source code nor installing Go is needed. In case there is no pre-compiled binary presented for your system, you can refer to the [Compilation](#compilation) section.
 
-This program only requires the `PAN-USOM-API2EDL.env` file to determine which settings it will run with. The supplied `PAN-USOM-API2EDL.env` is a sample/template — rename or copy it to `PAN-USOM-API2EDL.env` to use it. Even if the program can run with its default settings without any options set in the env file, the env file must be present and accessible.
+This program only requires the `PAN-SGB-API2EDL.env` file to determine which settings it will run with. The supplied `PAN-SGB-API2EDL.env` is a sample/template — rename or copy it to `PAN-SGB-API2EDL.env` to use it. Even if the program can run with its default settings without any options set in the env file, the env file must be present and accessible.
 
-By default, the program searches for the `PAN-USOM-API2EDL.env` file in the working directory. The working directory can be changed by passing the `-dir [PATH]` argument. (`PATH` value for `-dir` can be absolute or relative.) The working directory also determines where the generated EDL files will be placed. If you need to change the output directory without changing the working directory, you can use the `-out [PATH]` argument for that purpose. (`PATH` value for `-out` can be absolute or relative. If a relative `PATH` value for `-out` is used together with the `-dir` option, it is based on the former working directory.) These options can be explored by passing the `-usage` argument to the program.
+By default, the program searches for the `PAN-SGB-API2EDL.env` file in the working directory. The working directory can be changed by passing the `-dir [PATH]` argument. (`PATH` value for `-dir` can be absolute or relative.) The working directory also determines where the generated EDL files will be placed. If you need to change the output directory without changing the working directory, you can use the `-out [PATH]` argument for that purpose. (`PATH` value for `-out` can be absolute or relative. If a relative `PATH` value for `-out` is used together with the `-dir` option, it is based on the former working directory.) These options can be explored by passing the `-usage` argument to the program.
 
-There are multiple settings controlled in environment variable format in the `PAN-USOM-API2EDL.env` file. These settings are explained in the [Settings](#settings) section.
+There are multiple settings controlled in environment variable format in the `PAN-SGB-API2EDL.env` file. These settings are explained in the [Settings](#settings) section.
 
 How to schedule this program and how to serve generated EDL files are not within the scope of this program or this documentation. Nevertheless, some hints are shared in the [Hints](#hints) section.
 
@@ -68,14 +68,14 @@ Each generated file includes a header with the last update timestamp and the rec
 
 ## Settings:
 
-All setting options are provided with the sample `PAN-USOM-API2EDL.env` file, along with short descriptions and default values for each. Note that all lines are commented-out in the sample. To use any option, simply remove the comment token (`#`) and set the preferred value. When ready, rename or copy the file to `PAN-USOM-API2EDL.env`.
+All setting options are provided with the sample `PAN-SGB-API2EDL.env` file, along with short descriptions and default values for each. Note that all lines are commented-out in the sample. To use any option, simply remove the comment token (`#`) and set the preferred value. When ready, rename or copy the file to `PAN-SGB-API2EDL.env`.
 
 Settings can also be provided as actual environment variables, which take precedence over the env file.
 
 ```shell
 # Global Settings:
-API2EDL_GLOBAL__API_PATH={Enter URL of USOM API endpoint, Default: https://www.usom.gov.tr/api/address/index}
-API2EDL_GLOBAL__DB_PATH={Enter path to SQLite database file, Default: usom.db}
+API2EDL_GLOBAL__API_PATH={Enter URL of SGB (Formerly known as USOM) API endpoint, Default: https://siberguvenlik.gov.tr/api/address/index}
+API2EDL_GLOBAL__DB_PATH={Enter path to SQLite database file, Default: sgb.db}
 API2EDL_GLOBAL__READ_FROM_FILE={Enter either TRUE or FALSE to read from file instead of API, Default: FALSE}
 API2EDL_GLOBAL__ENABLE_CONCURRENCY={Enter either TRUE or FALSE to enable concurrent list generation, Default: FALSE}
 API2EDL_GLOBAL__NUM_OF_WORKER={Enter number of concurrent workers, Default: 4}
@@ -112,15 +112,15 @@ API2EDL_LIST__SKIP_IF_DB_IDENTICAL={Enter either TRUE or FALSE to skip output if
 
 **API2EDL_GLOBAL__API_PATH**
 
-TYPE: `String` DEFAULT VALUE: `https://www.usom.gov.tr/api/address/index`
+TYPE: `String` DEFAULT VALUE: `https://siberguvenlik.gov.tr/api/address/index`
 
-The URL of the USOM JSON API endpoint. The program fetches all paginated pages from this URL. Normally, there is no need to change this from the default value. However, it is implemented for a possible future scenario where USOM changes the URL and a quick reconfiguration is needed without recompiling the source code.
+The URL of the SGB (Formerly known as USOM) JSON API endpoint. The program fetches all paginated pages from this URL. Normally, there is no need to change this from the default value. However, it is implemented for a possible future scenario where SGB (Formerly known as USOM) changes the URL and a quick reconfiguration is needed without recompiling the source code.
 
 **API2EDL_GLOBAL__DB_PATH**
 
-TYPE: `String` DEFAULT VALUE: `usom.db`
+TYPE: `String` DEFAULT VALUE: `sgb.db`
 
-Path to the on-disk SQLite database file. After each successful fetch, the in-memory database is compared with this file. If differences are detected, the old file is renamed to `usom.db_old` as a rotating backup and a new snapshot is written. On the next run the freshest snapshot can be used directly via `READ_FROM_FILE`.
+Path to the on-disk SQLite database file. After each successful fetch, the in-memory database is compared with this file. If differences are detected, the old file is renamed to `sgb.db_old` as a rotating backup and a new snapshot is written. On the next run the freshest snapshot can be used directly via `READ_FROM_FILE`.
 
 **API2EDL_GLOBAL__READ_FROM_FILE**
 
@@ -204,7 +204,7 @@ Maximum number of redirects to follow when `ALLOW_REDIRECT` is `TRUE`.
 
 TYPE: `Integer` DEFAULT VALUE: `30000000`
 
-Maximum response body size in bytes (default ~30 MB). Requests exceeding this limit will be rejected. Adjust if the USOM API response ever grows beyond this size.
+Maximum response body size in bytes (default ~30 MB). Requests exceeding this limit will be rejected. Adjust if the SGB (Formerly known as USOM) API response ever grows beyond this size.
 
 **API2EDL_REQUEST__USER_AGENT**
 
@@ -216,7 +216,7 @@ The User-Agent header sent with each API request.
 
 TYPE: `Integer` DEFAULT VALUE: `5`
 
-The minimum criticality level threshold for `high` severity lists (1 = lowest, 5 = highest). Only records with a criticality level equal to or greater than this value are included in lists with `high` severity. Records in `any` severity lists are never filtered by criticality. USOM assigns criticality from 1 to 5.
+The minimum criticality level threshold for `high` severity lists (1 = lowest, 5 = highest). Only records with a criticality level equal to or greater than this value are included in lists with `high` severity. Records in `any` severity lists are never filtered by criticality. SGB (Formerly known as USOM) assigns criticality from 1 to 5.
 
 **API2EDL_LIST__CREATE_STANDALONE_LISTS**
 
@@ -228,7 +228,7 @@ When `TRUE`, generates separate EDL files for each IOC type (`ip`, `url`, `domai
 
 TYPE: `Boolean` DEFAULT VALUE: `TRUE`
 
-When `TRUE`, generates aggregated EDL files that cross USOM-assigned type boundaries using forced regex extraction:
+When `TRUE`, generates aggregated EDL files that cross SGB (Formerly known as USOM) assigned type boundaries using forced regex extraction:
 
 * `aggr_url` — URLs extracted from IP, URL, and domain-typed records.
 * `aggr_domain` — Domains extracted from URL-typed and domain-typed records.
@@ -256,7 +256,7 @@ When using this program under Unix-like OSes like Linux or macOS, Cron can be us
 ```shell
 # /etc/crontab
 # To run the program every hour:
-0 * * * * /path_to_binary/PAN-USOM-API2EDL -dir /path_to_env_file/ -out /path_for_edl_files/
+0 * * * * /path_to_binary/PAN-SGB-API2EDL -dir /path_to_env_file/ -out /path_for_edl_files/
 ```
 
 Under Windows OSes, the Task Scheduler tool can be used for the same purpose.
@@ -273,14 +273,14 @@ python3 -m http.server 8080
 If none of the pre-compiled binaries covers your environment, you can compile from source. Here are the instructions:
 
 ```shell
-git clone https://github.com/enginy88/PAN-USOM-API2EDL.git
-cd PAN-USOM-API2EDL
+git clone https://github.com/enginy88/PAN-SGB-API2EDL.git
+cd PAN-SGB-API2EDL
 go mod tidy
 make local  # Compile for your own environment.
 make        # Cross-compile for all pre-selected environments.
 ```
 
-Cross-compiled binaries are placed under the `bin/` directory with platform suffixes (e.g. `PAN-USOM-API2EDL_lin-amd64`, `PAN-USOM-API2EDL_mac-arm64`, `PAN-USOM-API2EDL_win-amd64.exe`). All binaries are built with `CGO_ENABLED=0` and are therefore fully self-contained — no shared libraries or runtime dependencies are required on the target system.
+Cross-compiled binaries are placed under the `bin/` directory with platform suffixes (e.g. `PAN-SGB-API2EDL_lin-amd64`, `PAN-SGB-API2EDL_mac-arm64`, `PAN-SGB-API2EDL_win-amd64.exe`). All binaries are built with `CGO_ENABLED=0` and are therefore fully self-contained — no shared libraries or runtime dependencies are required on the target system.
 
 **NOTE:** To compile from source, Go must be installed in the environment. However, it is not necessary to run the compiled binaries. Please consult the Go website for installation instructions: [Installing Go](https://go.dev/doc/install)
 

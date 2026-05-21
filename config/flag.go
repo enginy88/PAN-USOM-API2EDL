@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/enginy88/PAN-USOM-API2EDL/logger"
+	"github.com/enginy88/PAN-SGB-API2EDL/logger"
 )
 
 type AppFlagStruct struct {

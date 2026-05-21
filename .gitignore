@@ -6,6 +6,10 @@ url-list.xml
 url-list.txt
 PAN-USOM-API2EDL.env
 PAN-USOM-API2EDL
+PAN-SGB-API2EDL.env
+PAN-SGB-API2EDL
+sgb.db
+sgb.db_old
 usom.db
 usom.db_old
 *.txt

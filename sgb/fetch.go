@@ -1,4 +1,4 @@
-package usom
+package sgb
 
 import (
 	"context"
@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/enginy88/PAN-USOM-API2EDL/config"
-	"github.com/enginy88/PAN-USOM-API2EDL/logger"
+	"github.com/enginy88/PAN-SGB-API2EDL/config"
+	"github.com/enginy88/PAN-SGB-API2EDL/logger"
 
 	"github.com/go-resty/resty/v2"
 )

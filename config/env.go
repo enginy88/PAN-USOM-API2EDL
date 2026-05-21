@@ -3,14 +3,14 @@ package config
 import (
 	"strings"
 
-	"github.com/enginy88/PAN-USOM-API2EDL/logger"
+	"github.com/enginy88/PAN-SGB-API2EDL/logger"
 
 	"github.com/JeremyLoy/config"
 )
 
 const (
-	DEFAULT_GLB_API_PATH           = "https://www.usom.gov.tr/api/address/index"
-	DEFAULT_GLB_DB_PATH            = "usom.db"
+	DEFAULT_GLB_API_PATH           = "https://siberguvenlik.gov.tr/api/address/index"
+	DEFAULT_GLB_DB_PATH            = "sgb.db"
 	DEFAULT_GLB_READ_FROM_FILE     = false
 	DEFAULT_GLB_ENABLE_CONCURRENCY = false
 	DEFAULT_GLB_NUM_OF_WORKER      = 4

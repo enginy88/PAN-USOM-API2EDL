@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/enginy88/PAN-USOM-API2EDL/logger"
+	"github.com/enginy88/PAN-SGB-API2EDL/logger"
 
 	_ "modernc.org/sqlite"
 )
@@ -22,7 +22,7 @@ func InitDB(ctx context.Context) error {
 	}
 
 	createTableSQL := `
-	CREATE TABLE IF NOT EXISTS usom_records (
+	CREATE TABLE IF NOT EXISTS sgb_records (
 		id INTEGER PRIMARY KEY,
 		url TEXT,
 		type TEXT,
@@ -33,9 +33,9 @@ func InitDB(ctx context.Context) error {
 		connection_type TEXT,
 		UNIQUE(url, type)
 	);
-	CREATE INDEX IF NOT EXISTS idx_date ON usom_records(date);
-	CREATE INDEX IF NOT EXISTS idx_type ON usom_records(type);
-	CREATE INDEX IF NOT EXISTS idx_criticality ON usom_records(criticality_level);
+	CREATE INDEX IF NOT EXISTS idx_date ON sgb_records(date);
+	CREATE INDEX IF NOT EXISTS idx_type ON sgb_records(type);
+	CREATE INDEX IF NOT EXISTS idx_criticality ON sgb_records(criticality_level);
 	`
 
 	_, err = db.ExecContext(ctx, createTableSQL)

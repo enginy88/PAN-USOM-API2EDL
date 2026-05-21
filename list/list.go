@@ -9,9 +9,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/enginy88/PAN-USOM-API2EDL/config"
-	"github.com/enginy88/PAN-USOM-API2EDL/db"
-	"github.com/enginy88/PAN-USOM-API2EDL/logger"
+	"github.com/enginy88/PAN-SGB-API2EDL/config"
+	"github.com/enginy88/PAN-SGB-API2EDL/db"
+	"github.com/enginy88/PAN-SGB-API2EDL/logger"
 )
 
 type ListType string

@@ -7,8 +7,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/enginy88/PAN-USOM-API2EDL/logger"
-	"github.com/enginy88/PAN-USOM-API2EDL/usom"
+	"github.com/enginy88/PAN-SGB-API2EDL/logger"
+	"github.com/enginy88/PAN-SGB-API2EDL/sgb"
 )
 
 func BackupToFile(ctx context.Context, dbPath string) error {
@@ -48,7 +48,7 @@ func HandleBackupFile(dbPath string) error {
 	return nil
 }
 
-func StoreRecords(ctx context.Context, models []usom.Model) error {
+func StoreRecords(ctx context.Context, models []sgb.Model) error {
 	tx, err := db.BeginTx(ctx, nil)
 	if err != nil {
 		return err
@@ -60,7 +60,7 @@ func StoreRecords(ctx context.Context, models []usom.Model) error {
 	}()
 
 	stmt, err := tx.PrepareContext(ctx, `
-		INSERT OR IGNORE INTO usom_records 
+		INSERT OR IGNORE INTO sgb_records 
 		(id, url, type, desc, source, date, criticality_level, connection_type)
 		VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 	`)
@@ -100,8 +100,8 @@ func LoadFromFile(ctx context.Context, dbPath string) error {
 	}
 
 	_, err = db.ExecContext(ctx, `
-		INSERT INTO usom_records 
-		SELECT * FROM filedb.usom_records
+		INSERT INTO sgb_records 
+		SELECT * FROM filedb.sgb_records
 	`)
 	if err != nil {
 		return err

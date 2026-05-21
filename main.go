@@ -5,9 +5,9 @@ import (
 	"io"
 	"time"
 
-	"github.com/enginy88/PAN-USOM-API2EDL/config"
-	"github.com/enginy88/PAN-USOM-API2EDL/job"
-	"github.com/enginy88/PAN-USOM-API2EDL/logger"
+	"github.com/enginy88/PAN-SGB-API2EDL/config"
+	"github.com/enginy88/PAN-SGB-API2EDL/job"
+	"github.com/enginy88/PAN-SGB-API2EDL/logger"
 )
 
 func main() {

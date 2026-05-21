@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/enginy88/PAN-USOM-API2EDL/logger"
+	"github.com/enginy88/PAN-SGB-API2EDL/logger"
 )
 
 type regexType string

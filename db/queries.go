@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/enginy88/PAN-USOM-API2EDL/usom"
+	"github.com/enginy88/PAN-SGB-API2EDL/sgb"
 )
 
 type QueryParams struct {
@@ -19,9 +19,9 @@ type QueryParams struct {
 	Limit          int
 }
 
-func GetRecords(ctx context.Context, params QueryParams) ([]usom.Model, error) {
+func GetRecords(ctx context.Context, params QueryParams) ([]sgb.Model, error) {
 	query := strings.Builder{}
-	query.WriteString("SELECT * FROM usom_records WHERE 1=1")
+	query.WriteString("SELECT * FROM sgb_records WHERE 1=1")
 
 	var args []any
 
@@ -70,9 +70,9 @@ func GetRecords(ctx context.Context, params QueryParams) ([]usom.Model, error) {
 	}
 	defer rows.Close()
 
-	var records []usom.Model
+	var records []sgb.Model
 	for rows.Next() {
-		var r usom.Model
+		var r sgb.Model
 		err = rows.Scan(&r.ID, &r.URL, &r.Type, &r.Desc, &r.Source,
 			&r.Date, &r.CriticalityLevel, &r.ConnectionType)
 		if err != nil {

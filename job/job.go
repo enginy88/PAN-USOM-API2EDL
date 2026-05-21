@@ -5,11 +5,11 @@ import (
 	"os"
 	"sync"
 
-	"github.com/enginy88/PAN-USOM-API2EDL/config"
-	"github.com/enginy88/PAN-USOM-API2EDL/db"
-	"github.com/enginy88/PAN-USOM-API2EDL/list"
-	"github.com/enginy88/PAN-USOM-API2EDL/logger"
-	"github.com/enginy88/PAN-USOM-API2EDL/usom"
+	"github.com/enginy88/PAN-SGB-API2EDL/config"
+	"github.com/enginy88/PAN-SGB-API2EDL/db"
+	"github.com/enginy88/PAN-SGB-API2EDL/list"
+	"github.com/enginy88/PAN-SGB-API2EDL/logger"
+	"github.com/enginy88/PAN-SGB-API2EDL/sgb"
 )
 
 func RunAllJobs() {
@@ -28,12 +28,12 @@ func RunAllJobs() {
 			return
 		}
 	} else {
-		if err := usom.FetchAllPages(ctx); err != nil {
+		if err := sgb.FetchAllPages(ctx); err != nil {
 			logger.LogErr.Println("JOB: Failed to fetch pages! (" + err.Error() + ")")
 			return
 		}
 
-		if err := db.StoreRecords(ctx, usom.AllModels); err != nil {
+		if err := db.StoreRecords(ctx, sgb.AllModels); err != nil {
 			logger.LogErr.Println("JOB: Failed to store records! (" + err.Error() + ")")
 			return
 		}
