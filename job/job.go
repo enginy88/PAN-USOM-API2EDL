@@ -68,6 +68,11 @@ func RunAllJobs() {
 			}
 		} else {
 			logger.LogInfo.Println("JOB: No existing database file found. Will create a new one.")
+
+			if err := db.BackupToFile(ctx, config.AppEnv.Global.DBPath); err != nil {
+				logger.LogErr.Println("JOB: Failed to backup database! (" + err.Error() + ")")
+				return
+			}
 		}
 	}
 
