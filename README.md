@@ -95,6 +95,7 @@ API2EDL_REQUEST__ALLOW_REDIRECT={Enter either TRUE or FALSE to allow HTTP redire
 API2EDL_REQUEST__MAX_REDIRECT={Enter maximum number of redirects to follow, Default: 2}
 API2EDL_REQUEST__RESPONSE_BODY_LIMIT={Enter maximum response body size in bytes, Default: 30000000}
 API2EDL_REQUEST__USER_AGENT={Enter custom User-Agent header string, Default: Mozilla/5.0 (compatible; Linux x86_64; IDEUS/1.0)}
+API2EDL_REQUEST__PER_PAGE={Enter number of records per page for API requests, Default: 9999}
 
 # List Settings:
 API2EDL_LIST__MIN_CRITICALITY={Enter minimum criticality level to include entries (1-5), Default: 5}
@@ -211,6 +212,12 @@ Maximum response body size in bytes (default ~30 MB). Requests exceeding this li
 TYPE: `String` DEFAULT VALUE: `Mozilla/5.0 (compatible; Linux x86_64; IDEUS/1.0)`
 
 The User-Agent header sent with each API request.
+
+**API2EDL_REQUEST__PER_PAGE**
+
+TYPE: `Integer` DEFAULT VALUE: `9999`
+
+The number of records requested per page (the `per-page` query parameter) on each paginated API call. A higher value fetches more records per request, reducing the total number of pages and requests needed to retrieve the full feed.
 
 **API2EDL_LIST__MIN_CRITICALITY**
 

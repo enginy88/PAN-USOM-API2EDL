@@ -98,8 +98,7 @@ func newAPIRequest(ctx context.Context, apiPath string) (*APIRequest, error) {
 func (req *APIRequest) fetchPage(page int, config *Config) (*Response, error) {
 
 	params := map[string]string{
-		"page":     strconv.Itoa(page),
-		"per-page": "99999", // Always set per-page to 99999
+		"page": strconv.Itoa(page),
 	}
 
 	// Add optional parameters only if config is provided and values are set
@@ -175,7 +174,7 @@ func FetchAllPages(ctx context.Context) error {
 	defer req.cancelRequest()
 
 	config := &Config{
-		PerPage: 99999,
+		PerPage: config.AppEnv.Request.PerPage,
 	}
 
 	// Fetch first page to get total page count

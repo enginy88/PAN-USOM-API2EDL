@@ -28,6 +28,7 @@ const (
 	DEFAULT_REQ_MAX_REDIRECT        = 2
 	DEFAULT_REQ_RESPONSE_BODY_LIMIT = 30000000
 	DEFAULT_REQ_USER_AGENT          = "Mozilla/5.0 (compatible; Linux x86_64; IDEUS/1.0)"
+	DEFAULT_REQ_PER_PAGE            = 9999
 
 	DEFAULT_LST_MIN_CRITICALITY         = 5
 	DEFAULT_LST_CREATE_STANDALONE_LISTS = true
@@ -60,6 +61,7 @@ type RequestSubEnvStruct struct {
 	MaxRedirect       int    `config:"MAX_REDIRECT"`
 	ResponseBodyLimit int    `config:"RESPONSE_BODY_LIMIT"`
 	UserAgent         string `config:"USER_AGENT"`
+	PerPage           int    `config:"PER_PAGE"`
 }
 
 type ListSubEnvStruct struct {
@@ -103,6 +105,7 @@ func createDefaultAppEnvStruct() *AppEnvStruct {
 			MaxRedirect:       DEFAULT_REQ_MAX_REDIRECT,
 			ResponseBodyLimit: DEFAULT_REQ_RESPONSE_BODY_LIMIT,
 			UserAgent:         DEFAULT_REQ_USER_AGENT,
+			PerPage:           DEFAULT_REQ_PER_PAGE,
 		},
 		List: ListSubEnvStruct{
 			MinCriticality:       DEFAULT_LST_MIN_CRITICALITY,
