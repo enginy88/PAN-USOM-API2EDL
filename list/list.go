@@ -188,7 +188,7 @@ func GenerateList(ctx context.Context, listConfig ListConfig) error {
 			seenRecords[validRecord] = struct{}{}
 			validRecords = append(validRecords, validRecord)
 		} else {
-			logger.LogInfo.Println("UNIQUE: Duplicate record found for the record: '" + validRecord + "'!")
+			logger.LogDebug.Println("UNIQUE: Duplicate record found for the record: '" + validRecord + "'!")
 		}
 	}
 

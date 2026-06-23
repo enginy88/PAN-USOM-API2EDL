@@ -59,14 +59,14 @@ func validateWithRegex(record string, rtype regexType, force bool) string {
 	case regexTypeIP:
 		if matches[ipIndex] == "" {
 			if !force {
-				logger.LogInfo.Println("REGEX: IP match not found for the record: '" + record + "'!")
+				logger.LogDebug.Println("REGEX: IP match not found for the record: '" + record + "'!")
 			}
 			return ""
 		}
 		return matches[ipIndex]
 	case regexTypeURL:
 		if matches[rootIndex] == "" && !force {
-			logger.LogInfo.Println("REGEX: URL match not found for the record: '" + record + "'!")
+			logger.LogDebug.Println("REGEX: URL match not found for the record: '" + record + "'!")
 			return ""
 		}
 
@@ -88,7 +88,7 @@ func validateWithRegex(record string, rtype regexType, force bool) string {
 	case regexTypeDomain:
 		if matches[domainIndex] == "" {
 			if !force {
-				logger.LogInfo.Println("REGEX: Domain match not found for the record: '" + record + "'!")
+				logger.LogDebug.Println("REGEX: Domain match not found for the record: '" + record + "'!")
 			}
 			return ""
 		}

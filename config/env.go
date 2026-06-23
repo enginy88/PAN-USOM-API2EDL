@@ -16,12 +16,14 @@ const (
 	DEFAULT_GLB_NUM_OF_WORKER      = 4
 
 	DEFAULT_LOG_VERBOSE         = false
+	DEFAULT_LOG_DEBUG           = false
 	DEFAULT_LOG_WRITE_TO_DIR    = ""
 	DEFAULT_LOG_FILENAME_SUFFIX = ""
 
 	DEFAULT_REQ_TOTAL_TIMEOUT       = 180
 	DEFAULT_REQ_REQUEST_TIMEOUT     = 30
 	DEFAULT_REQ_ADD_RETRY_COUNT     = 2 // Retry count is number of additional requests after the first request.
+	DEFAULT_REQ_ADD_REFETCH_COUNT   = 2 // Refetch count is number of additional fetches after an inconsistent page response.
 	DEFAULT_REQ_RETRY_WAIT_TIME     = 1000
 	DEFAULT_REQ_RETRY_MAX_WAIT_TIME = 5000
 	DEFAULT_REQ_ALLOW_REDIRECT      = false
@@ -47,6 +49,7 @@ type GlobalSubEnvStruct struct {
 
 type LogSubEnvStruct struct {
 	Verbose        bool   `config:"VERBOSE"`
+	Debug          bool   `config:"DEBUG"`
 	WriteToDir     string `config:"WRITE_TO_DIR"`
 	FilenameSuffix string `config:"FILENAME_SUFFIX"`
 }
@@ -55,6 +58,7 @@ type RequestSubEnvStruct struct {
 	TotalTimeout      int    `config:"TOTAL_TIMEOUT"`
 	RequestTimeout    int    `config:"REQUEST_TIMEOUT"`
 	AddRetryCount     int    `config:"ADD_RETRY_COUNT"`
+	AddRefetchCount   int    `config:"ADD_REFETCH_COUNT"`
 	RetryWaitTime     int    `config:"RETRY_WAIT_TIME"`
 	RetryMaxWaitTime  int    `config:"RETRY_MAX_WAIT_TIME"`
 	AllowRedirect     bool   `config:"ALLOW_REDIRECT"`
@@ -92,6 +96,7 @@ func createDefaultAppEnvStruct() *AppEnvStruct {
 		},
 		Log: LogSubEnvStruct{
 			Verbose:        DEFAULT_LOG_VERBOSE,
+			Debug:          DEFAULT_LOG_DEBUG,
 			WriteToDir:     DEFAULT_LOG_WRITE_TO_DIR,
 			FilenameSuffix: DEFAULT_LOG_FILENAME_SUFFIX,
 		},
@@ -99,6 +104,7 @@ func createDefaultAppEnvStruct() *AppEnvStruct {
 			TotalTimeout:      DEFAULT_REQ_TOTAL_TIMEOUT,
 			RequestTimeout:    DEFAULT_REQ_REQUEST_TIMEOUT,
 			AddRetryCount:     DEFAULT_REQ_ADD_RETRY_COUNT,
+			AddRefetchCount:   DEFAULT_REQ_ADD_REFETCH_COUNT,
 			RetryWaitTime:     DEFAULT_REQ_RETRY_WAIT_TIME,
 			RetryMaxWaitTime:  DEFAULT_REQ_RETRY_MAX_WAIT_TIME,
 			AllowRedirect:     DEFAULT_REQ_ALLOW_REDIRECT,

@@ -16,7 +16,8 @@ This program's existence is due to the following reasons:
 
 To overcome these challenges, PAN-SGB-API2EDL needs to be used as a middleware. This program:
 
-* Fetches the full SGB (Formerly known as USOM) IOC Feed via the paginated JSON API.
+* Fetches the full SGB (Formerly known as USOM) IOC Feed via the paginated JSON API, sequentially or concurrently using a configurable worker pool.
+* Validates the integrity of every fetched page (reported count vs. received records, and per-page consistency), automatically refetching inconsistent pages and aborting if the grand total never matches the API-reported record count.
 * Persists all fetched records into an in-memory SQLite database.
 * Detects changes by comparing the in-memory database against the previously saved on-disk snapshot.
 * Creates a rotating backup of the on-disk database when changes are detected.
@@ -77,11 +78,12 @@ Settings can also be provided as actual environment variables, which take preced
 API2EDL_GLOBAL__API_PATH={Enter URL of SGB (Formerly known as USOM) API endpoint, Default: https://siberguvenlik.gov.tr/api/address/index}
 API2EDL_GLOBAL__DB_PATH={Enter path to SQLite database file, Default: sgb.db}
 API2EDL_GLOBAL__READ_FROM_FILE={Enter either TRUE or FALSE to read from file instead of API, Default: FALSE}
-API2EDL_GLOBAL__ENABLE_CONCURRENCY={Enter either TRUE or FALSE to enable concurrent list generation, Default: FALSE}
+API2EDL_GLOBAL__ENABLE_CONCURRENCY={Enter either TRUE or FALSE to enable concurrent page fetching and list generation, Default: FALSE}
 API2EDL_GLOBAL__NUM_OF_WORKER={Enter number of concurrent workers, Default: 4}
 
 # Log Settings:
 API2EDL_LOG__VERBOSE={Enter either TRUE or FALSE to enable verbose logging, Default: FALSE}
+API2EDL_LOG__DEBUG={Enter either TRUE or FALSE to enable debug logging, Default: FALSE}
 API2EDL_LOG__WRITE_TO_DIR={Enter directory path to write log files, Default: (empty, logs to stdout)}
 API2EDL_LOG__FILENAME_SUFFIX={Enter suffix string to append to log filenames, Default: (empty)}
 
@@ -89,6 +91,7 @@ API2EDL_LOG__FILENAME_SUFFIX={Enter suffix string to append to log filenames, De
 API2EDL_REQUEST__TOTAL_TIMEOUT={Enter total operation timeout in seconds, Default: 180}
 API2EDL_REQUEST__REQUEST_TIMEOUT={Enter per-request timeout in seconds, Default: 30}
 API2EDL_REQUEST__ADD_RETRY_COUNT={Enter number of additional retry attempts after first request, Default: 2}
+API2EDL_REQUEST__ADD_REFETCH_COUNT={Enter number of additional refetch attempts after an inconsistent page response, Default: 5}
 API2EDL_REQUEST__RETRY_WAIT_TIME={Enter wait time between retries in milliseconds, Default: 1000}
 API2EDL_REQUEST__RETRY_MAX_WAIT_TIME={Enter maximum wait time between retries in milliseconds, Default: 5000}
 API2EDL_REQUEST__ALLOW_REDIRECT={Enter either TRUE or FALSE to allow HTTP redirects, Default: FALSE}
@@ -133,19 +136,25 @@ When set to `TRUE`, the program skips the live API fetch and loads records direc
 
 TYPE: `Boolean` DEFAULT VALUE: `FALSE`
 
-When set to `TRUE`, EDL list generation tasks are dispatched to a worker pool instead of being processed one by one. For large numbers of output files this can significantly reduce total run time. The number of parallel workers is controlled by `NUM_OF_WORKER`.
+When set to `TRUE`, both the paginated API fetch and EDL list generation are dispatched to a worker pool instead of being processed one by one. The first page is always fetched first (to learn the total page count), then the remaining pages are fetched in parallel; for large feeds and many output files this can significantly reduce total run time. The number of parallel workers is controlled by `NUM_OF_WORKER`.
 
 **API2EDL_GLOBAL__NUM_OF_WORKER**
 
 TYPE: `Integer` DEFAULT VALUE: `4`
 
-The number of goroutine workers in the pool when `ENABLE_CONCURRENCY` is `TRUE`. Has no effect when concurrency is disabled.
+The number of goroutine workers in the pool when `ENABLE_CONCURRENCY` is `TRUE`, used both for concurrent page fetching and for concurrent list generation. Has no effect when concurrency is disabled.
 
 **API2EDL_LOG__VERBOSE**
 
 TYPE: `Boolean` DEFAULT VALUE: `FALSE`
 
-This program has 4 levels of log output: always, error, warning, and info. When set to `FALSE`, info-level logs are suppressed. Always-level and error-level logs are never suppressed. Error-level logs indicate an unrecoverable failure that causes the program to stop.
+This program has 5 levels of log output: always, error, warning, info, and debug. When set to `FALSE`, info-level logs are suppressed. Always-level and error-level logs are never suppressed. Error-level logs indicate an unrecoverable failure that causes the program to stop.
+
+**API2EDL_LOG__DEBUG**
+
+TYPE: `Boolean` DEFAULT VALUE: `FALSE`
+
+When set to `TRUE`, debug-level logs are emitted. Debug-level logs contain highly detailed diagnostic information such as API response headers and per-record parsing/deduplication messages. When set to `FALSE`, debug-level logs are suppressed. This is independent of `VERBOSE`.
 
 **API2EDL_LOG__WRITE_TO_DIR**
 
@@ -175,7 +184,13 @@ Per-request timeout for each individual API call, in seconds.
 
 TYPE: `Integer` DEFAULT VALUE: `2`
 
-Number of additional retry attempts after the first failed request. A value of `2` means up to 3 total attempts per page.
+Number of additional transport-level retry attempts after the first failed request. This operates at the HTTP layer and covers connection errors and non-2xx responses. A value of `2` means up to 3 total attempts per request.
+
+**API2EDL_REQUEST__ADD_REFETCH_COUNT**
+
+TYPE: `Integer` DEFAULT VALUE: `5`
+
+Number of additional content-level refetch attempts after a page is fetched successfully (HTTP 2xx) but fails the integrity check — for example when a page returns zero or a mismatched number of records. This is distinct from `ADD_RETRY_COUNT`, which only reacts to transport failures. A value of `5` means up to 6 total fetch attempts for an inconsistent page. If a page still cannot be validated after all attempts, the whole fetch session is aborted. The total record count reported by the API is also verified against the grand total of all fetched records, aborting on any mismatch.
 
 **API2EDL_REQUEST__RETRY_WAIT_TIME**
 
@@ -217,7 +232,7 @@ The User-Agent header sent with each API request.
 
 TYPE: `Integer` DEFAULT VALUE: `9999`
 
-The number of records requested per page (the `per-page` query parameter) on each paginated API call. A higher value fetches more records per request, reducing the total number of pages and requests needed to retrieve the full feed.
+The number of records requested per page (the `per-page` query parameter) on each paginated API call. A higher value fetches more records per request, reducing the total number of pages and requests needed to retrieve the full feed. This value also drives the per-page integrity check: every page except the last is expected to contain exactly this many records.
 
 **API2EDL_LIST__MIN_CRITICALITY**
 

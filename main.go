@@ -22,6 +22,10 @@ func main() {
 		logger.LogInfo.SetOutput(io.Discard)
 	}
 
+	if !config.AppEnv.Log.Debug {
+		logger.LogDebug.SetOutput(io.Discard)
+	}
+
 	job.RunAllJobs()
 
 	duration := fmt.Sprintf("%.1f", time.Since(start).Seconds())

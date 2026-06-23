@@ -14,6 +14,7 @@ var (
 	LogErr    *log.Logger
 	LogWarn   *log.Logger
 	LogInfo   *log.Logger
+	LogDebug  *log.Logger
 	LogAlways *log.Logger
 )
 
@@ -27,6 +28,7 @@ func init() {
 	LogErr = log.New(os.Stderr, "["+AppName+"] ERROR: ", log.Ldate|log.Ltime|log.Lmicroseconds|log.Lshortfile|log.LUTC)
 	LogWarn = log.New(os.Stdout, "["+AppName+"] WARNING: ", log.Ldate|log.Ltime|log.Lmicroseconds|log.Lshortfile|log.LUTC)
 	LogInfo = log.New(os.Stdout, "["+AppName+"] INFO: ", log.Ldate|log.Ltime|log.Lmicroseconds|log.Lshortfile|log.LUTC)
+	LogDebug = log.New(os.Stdout, "["+AppName+"] DEBUG: ", log.Ldate|log.Ltime|log.Lmicroseconds|log.Lshortfile|log.LUTC)
 	LogAlways = log.New(os.Stdout, "["+AppName+"] ALWAYS: ", log.Ldate|log.Ltime|log.Lmicroseconds|log.Lshortfile|log.LUTC)
 }
 
